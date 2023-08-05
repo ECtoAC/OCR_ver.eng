@@ -1,0 +1,7 @@
+opencv-python-headless
+numpy
+pillow
+pyocr
+python-docx
+transformers
+streamlit
