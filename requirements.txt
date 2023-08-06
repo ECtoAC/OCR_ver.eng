@@ -8,3 +8,5 @@ streamlit==1.21.0
 --find-links https://download.pytorch.org/whl/torch_stable.html
 torch==2.0.1+cpu
 pytesseract==0.3.10
+torchvision==0.8.2
+torchaudio==0.7.2
