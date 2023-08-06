@@ -10,8 +10,8 @@ from docx import Document
 # モデルとプロセッサのロードは初回のみ行う
 @st.cache(allow_output_mutation=True)
 def load_model():
-    processor = TrOCRProcessor.from_pretrained('microsoft/trocr-large-handwritten')
-    model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-large-handwritten')
+    processor = TrOCRProcessor.from_pretrained('microsoft/trocr-base-handwritten')
+    model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-base-handwritten')
     return processor, model
 
 try:
