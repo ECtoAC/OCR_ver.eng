@@ -7,3 +7,4 @@ transformers==4.31.0
 streamlit==1.21.0
 --find-links https://download.pytorch.org/whl/torch_stable.html
 torch==2.0.1+cpu
+pytesseract==0.3.10
