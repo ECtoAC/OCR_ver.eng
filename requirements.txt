@@ -7,3 +7,4 @@ transformers==4.31.0
 streamlit==1.21.0
 torch==2.0.1
 pytesseract==0.3.10
+tesseract-ocr
