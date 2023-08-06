@@ -2,9 +2,15 @@ import cv2
 import numpy as np
 from PIL import Image
 import pyocr
-from docx import Document
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import streamlit as st
+from io import BytesIO
+
+try:
+    from docx import Document
+except ModuleNotFoundError as e:
+    st.write(f"Error: {e}")
+    raise SystemExit
 
 # モデルとプロセッサのロードは初回のみ行う
 @st.cache(allow_output_mutation=True)
@@ -67,5 +73,14 @@ if uploaded_file is not None:
         doc.add_paragraph(para)
 
     # Wordファイルの保存
-    doc.save("output.docx")
-    st.success("The document has been successfully saved as output.docx")
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    # Wordファイルのダウンロード
+    st.download_button(
+        label="Download output.docx",
+        data=buffer,
+        file_name='output.docx',
+        mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
