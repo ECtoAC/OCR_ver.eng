@@ -1,7 +1,4 @@
-
-# 必要なモジュールのインポート
 import cv2
-import os
 import numpy as np
 from PIL import Image
 import pyocr
@@ -9,12 +6,19 @@ from docx import Document
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import streamlit as st
 
-# プロセッサとモデルをロード
-processor = TrOCRProcessor.from_pretrained('microsoft/trocr-large-handwritten')
-model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-large-handwritten')
+# モデルとプロセッサのロードは初回のみ行う
+@st.cache(allow_output_mutation=True)
+def load_model():
+    processor = TrOCRProcessor.from_pretrained('microsoft/trocr-large-handwritten')
+    model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-large-handwritten')
+    return processor, model
+
+processor, model = load_model()
+
 st.title("OCR App")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg"])
+
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
 
@@ -50,14 +54,17 @@ if uploaded_file is not None:
 
     # 切り抜いた画像をOCRで処理し、Wordファイルに出力
     doc = Document()
+    paragraphs = [] # パラグラフを一度に追加するためのリスト
     for i, crop_dict in enumerate(crop_imgs):
         cropped_image = img_cv[crop_dict["ymin"]:crop_dict["ymax"], crop_dict["xmin"]:crop_dict["xmax"]]
         if cropped_image.size > 0:  # 切り取られた画像が空でない場合のみ処理
-            cv2.imwrite(f"cropped_image_{i}.png", cropped_image)
-            image = Image.open(f"cropped_image_{i}.png").convert("RGB")
+            image = Image.fromarray(cropped_image).convert("RGB")
             generated_ids = model.generate(processor(image, return_tensors="pt").pixel_values)
             S = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-            doc.add_paragraph(S)  # テキストをWordファイルに追加
+            paragraphs.append(S)
+
+    for para in paragraphs:  # ここで一度にパラグラフを追加
+        doc.add_paragraph(para)
 
     # Wordファイルの保存
     doc.save("output.docx")
