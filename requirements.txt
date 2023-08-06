@@ -6,4 +6,4 @@ python-docx==0.8.11
 transformers==4.31.0
 streamlit==1.21.0
 torch==2.0.1
-tesseract-ocr
+pytesseract==0.3.10
