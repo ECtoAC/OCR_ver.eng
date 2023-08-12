@@ -35,7 +35,7 @@ try:
             lang="eng",
             builder=pyocr.builders.WordBoxBuilder(tesseract_layout=11)
         )
-        tolerance = 110
+        tolerance = 100
         reference_y = word_boxes[0].position[0][1]
         crop_imgs = []
         crop_dict = {"xmin": 0, "xmax": img_cv.shape[1], "ymin": None, "ymax": None}
